@@ -35,7 +35,7 @@ Commands:
 
 ```
 
-### Create new config
+## Create new config
 
 The tool requires a `dove.json` configuration file to be placed with the Dockerfile. This file can be created by executing the following on shell:
 
