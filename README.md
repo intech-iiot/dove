@@ -9,7 +9,7 @@ You keep a docker tag template and a version in a configuration file and you use
 
 ## Installation
 
-You'd need python3 and pip. Simply clone the repository and do a
+You'd need docker(duh), python3 and pip. Simply clone the repository and do a
 ```
 sudo -H pip install ./
 ```
@@ -53,7 +53,11 @@ After creating the configuration file, run the following in the directory with r
 dove get
 ```
 
-This will show `my-repo/my-image:3.2.1` for the above configuration. Evidently, the version is split using a dot(.) and the components are substituted on the positional parameters.
+This will show `my-repo/my-image:3.2.1` for the above configuration. Evidently, the version is split using a dot(.) and the components are substituted on the positional parameters. Ofcourse you can use the tag in other commands such as: 
+
+```
+docker image inspect $(dove get)
+```
 
 
 ## Building the image with current tag
@@ -75,6 +79,27 @@ This will increment the portion of the version that is supposed to replace the p
 ```
 dove build --bump 0 --bump 1
 ```
+
+## Just bumping up the tag
+
+if you're inclined to use the docker cli commands yourself, you can still use the configuration and its version bumping features by bumping the version manually. To do so, do a:
+
+```
+dove bump --bump 0
+```
+
+This will update the version in the configuration and return the bumped up tag in the stdout, which can be nested in a docker command itself e.g.
+
+```
+docker build -t $(dove bump --bump 0) ./
+```
+
+or you can simply get the tag afterwards
+
+```
+docker build -t $(dove get) ./
+```
+
 
 ## Tagging an existing image
 
@@ -109,6 +134,14 @@ The `dove build` and `dove push` commands can be provided with `docker build` an
 ```
 dove build -a --pull
 ```
+
+or 
+
+```
+dove build -a --pull -a --no-cache -a --label=pickle-rick
+```
+
+Yeah I know, it's pretty repetitive, and you can only use the long version with `=`, but I didn't know any other way of separating the dove and docker command line args. At least it's better than nothing.
 
 ## Contributing
 

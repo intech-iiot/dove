@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="dove",
-    version='0.1',
+    version='0.0.1',
     description='Docker Versioning Extension',
     long_description='A tool to extend the docker functionality to include an incremental tag versioning system for docker images',
     license='Apache 2.0',

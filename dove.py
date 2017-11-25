@@ -55,6 +55,7 @@ def build(bump, args):
     config['version'] = to_version_string(version_parts)
   new_tag = config['format'].format(*version_parts)
   write_config(config)
+  click.echo('Using tag: [{}]'.format(new_tag))
   try:
     command = ['docker', 'build', *args, '-t', new_tag, './']
     subprocess.check_call(command, cwd=str(__location__))
@@ -67,7 +68,6 @@ def build(bump, args):
 @click.command(name='tag')
 @click.option('--srcimg', '-s', help='Tag of the source image')
 @click.option('--bump', '-b', multiple=True, help='Version position(s) to bump')
-@click.option('--args', '-a', multiple=True, help='Docker tag arguments')
 def tag(srcimg, bump, args):
   """Used to call docker tag"""
   config = read_config()
@@ -81,8 +81,9 @@ def tag(srcimg, bump, args):
     config['version'] = to_version_string(version_parts)
   new_tag = config['format'].format(*version_parts)
   write_config(config)
+  click.echo('Using tag: [{}]'.format(new_tag))
   try:
-    command = ['docker', 'tag', *args, srcimg, new_tag]
+    command = ['docker', 'tag', srcimg, new_tag]
     subprocess.check_call(command, cwd=str(__location__))
   except Exception as ex:
     config['version'] = old_version
@@ -105,6 +106,7 @@ def create_new(template, initial):
   new_config['format'] = template
   new_config['version'] = initial
   write_config(new_config)
+  click.echo('New config generated: \n' + json.dumps(obj=new_config, indent=4, sort_keys=True))
 
 
 @click.command(name='get')
@@ -130,8 +132,26 @@ def push(args):
     return
   version = config['version'].split('.')
   tag = config['format'].format(*version)
+  click.echo("Pushing image: [{}]".format(tag))
   command = ['docker', 'push', *args, tag]
   subprocess.check_call(command, cwd=str(__location__))
+
+@click.command(name='bump')
+@click.option('--bump', '-b', multiple=True, help='Version position(s) to bump')
+def bump(bump):
+  """Used to just bump up the current version"""
+  config = read_config()
+  if 'version' not in config or 'format' not in config:
+    click.echo('Error: The dove.json configuration is invalid')
+    return
+  old_version = config['version']
+  version_parts = old_version.split('.')
+  if bump is not None:
+    version_parts = update_version(old_version, map(int, bump))
+    config['version'] = to_version_string(version_parts)
+  write_config(config)
+  new_tag = config['format'].format(*version_parts)
+  click.echo(new_tag)
 
 
 @click.command(name='save')
@@ -150,16 +170,10 @@ def save(filename):
   command = ['docker', 'save', '-o', filename, tag]
   subprocess.check_call(command, cwd=str(__location__))
 
-
-class DoveError(Exception):
-  def __init__(self, expression, message):
-    self.expression = expression
-    self.message = message
-
-
 cli.add_command(build)
 cli.add_command(tag)
 cli.add_command(create_new)
 cli.add_command(push)
 cli.add_command(get_tag)
 cli.add_command(save)
+cli.add_command(bump)
