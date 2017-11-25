@@ -5,7 +5,7 @@ Have the static tagging mechanism of docker bugged you and prevented you from cr
 
 ### What it does?
 
-You keep a docker tag template and a version in a configuration file and you use this toolkit, which can automatically increment the version stored in the configuration file when building and tagging the iamge and automatically pick the full tag when saving and deploying an image. How does it help? Well you combine it with git and you got yourself a flawless CD/CI without any hardcoded tags.
+You keep a docker tag template and a version in a configuration file and you use this toolkit, which can automatically increment the version stored in the configuration file when building and tagging the image, and automatically pick the full tag when saving and deploying the image. How does it help? Well you combine it with git and you got yourself a flawless CD/CI without any hardcoded tags.
 
 ## Installation
 
