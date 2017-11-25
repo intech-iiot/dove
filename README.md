@@ -9,7 +9,7 @@ You keep a docker tag template and a version in a configuration file and you use
 
 ## Installation
 
-You'd need docker(duh), python3 and pip. Simply clone the repository and do a
+You'd need docker(duh), python3 and pip3 (for python3). Simply clone the repository and do a
 ```
 sudo -H pip install ./
 ```
