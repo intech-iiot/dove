@@ -54,15 +54,10 @@ def build(bump, args):
     version_parts = update_version(old_version, map(int, bump))
     config['version'] = to_version_string(version_parts)
   new_tag = config['format'].format(*version_parts)
-  write_config(config)
   click.echo('Using tag: [{}]'.format(new_tag))
-  try:
-    command = ['docker', 'build', *args, '-t', new_tag, './']
-    subprocess.check_call(command, cwd=str(__location__))
-  except Exception as ex:
-    config['version'] = old_version
-    write_config(config)
-    raise ex
+  command = ['docker', 'build', *args, '-t', new_tag, './']
+  subprocess.check_call(command, cwd=str(__location__))
+  write_config(config)
 
 
 @click.command(name='tag')
@@ -80,15 +75,10 @@ def tag(srcimg, bump, args):
     version_parts = update_version(old_version, map(int, bump))
     config['version'] = to_version_string(version_parts)
   new_tag = config['format'].format(*version_parts)
-  write_config(config)
   click.echo('Using tag: [{}]'.format(new_tag))
-  try:
-    command = ['docker', 'tag', srcimg, new_tag]
-    subprocess.check_call(command, cwd=str(__location__))
-  except Exception as ex:
-    config['version'] = old_version
-    write_config(config)
-    raise ex
+  command = ['docker', 'tag', srcimg, new_tag]
+  subprocess.check_call(command, cwd=str(__location__))
+  write_config(config)
 
 
 @click.command(name='new')
