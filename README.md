@@ -22,16 +22,29 @@ Like docker, it's a command-line tool. Do a `dove` on the shell to display all t
 ```
 Usage: dove [OPTIONS] COMMAND [ARGS]...
 
+  A docker versioning extension that manages docker tags through a JSON
+  file, so that the user doesn't have to  get into the hassle of writing and
+  updating image tags.
+
+  Maintained by: Intech Process Automation
+
+  For more info, visit:
+
+      https://github.com/intech-iiot/dove
+
 Options:
   --help  Show this message and exit.
 
 Commands:
-  build  Used to call docker build
-  get    Gets the current tag of the image
-  new    Used to initialize a new dove configuration
-  push   Used to call docker push
-  save   Used to call a docker save
-  tag    Used to call docker tag
+  build  Call docker build with saved tag
+  bump   Just bump up the current version
+  get    Get the current tag of the image
+  new    Initialize a new dove configuration
+  push   Call docker push on saved tag
+  reset  Reset the version at position(s) to 0
+  save   Call a docker save with saved tag
+  tag    Call docker tag with saved tag
+
 
 ```
 
@@ -85,13 +98,13 @@ dove build --bump 0 --bump 1
 if you're inclined to use the docker cli commands yourself, you can still use the configuration and its version bumping features by bumping the version manually. To do so, do a:
 
 ```
-dove bump --bump 0
+dove bump --position 0
 ```
 
 This will update the version in the configuration and return the bumped up tag in the stdout, which can be nested in a docker command itself e.g.
 
 ```
-docker build -t $(dove bump --bump 0) ./
+docker build -t $(dove bump --position 0) ./
 ```
 
 or you can simply get the tag afterwards
@@ -100,6 +113,15 @@ or you can simply get the tag afterwards
 docker build -t $(dove get) ./
 ```
 
+## Reseting version in tag
+
+You can also reset the version number at any position by:
+
+```
+dove reset --position 0
+```
+
+This will reset the version number at position 0, which is useful if you follow a major-minor release cycle since a major release bump means a reset of the minor release version to 0.
 
 ## Tagging an existing image
 
