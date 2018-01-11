@@ -23,6 +23,11 @@ def update_version(version, pos):
     components[position] = str(int(components[position]) + 1)
   return components
 
+def reset_version(version, pos):
+  components = version.split('.')
+  for position in pos:
+    components[position] = '0'
+  return components
 
 def to_version_string(components):
   version = ''
@@ -35,6 +40,13 @@ def to_version_string(components):
 
 @click.group(name='dove')
 def cli():
+  """A docker versioning extension that manages docker tags
+     through a JSON file, so that the user doesn't have to 
+     get into the hassle of writing and updating image tags.\n
+     Maintained by: Intech Process Automation \n
+     For more info, visit: \n
+     \t https://github.com/intech-iiot/dove
+     """
   pass
 
 
@@ -43,7 +55,7 @@ def cli():
 @click.option('--args', '-a', multiple=True,
               help='Docker build arguments (Except --tag, -t)')
 def build(bump, args):
-  """Used to call docker build"""
+  """Call docker build with saved tag"""
   config = read_config()
   if 'version' not in config or 'format' not in config:
     click.echo('Error: The dove.json configuration is invalid')
@@ -64,7 +76,7 @@ def build(bump, args):
 @click.option('--srcimg', '-s', help='Tag of the source image')
 @click.option('--bump', '-b', multiple=True, help='Version position(s) to bump')
 def tag(srcimg, bump, args):
-  """Used to call docker tag"""
+  """Call docker tag with saved tag"""
   config = read_config()
   if 'version' not in config or 'format' not in config:
     click.echo('Error: The dove.json configuration is invalid')
@@ -85,7 +97,7 @@ def tag(srcimg, bump, args):
 @click.option('--template', '-t', help='Image name template')
 @click.option('--initial', '-i', help='The initial version to start from')
 def create_new(template, initial):
-  """Used to initialize a new dove configuration"""
+  """Initialize a new dove configuration"""
   if template is None:
     click.echo('Error: No template provided')
     return
@@ -101,7 +113,7 @@ def create_new(template, initial):
 
 @click.command(name='get')
 def get_tag():
-  """Gets the current tag of the image"""
+  """Get the current tag of the image"""
   config = read_config()
   if 'version' not in config or 'format' not in config:
     click.echo('Error: The dove.json configuration is invalid')
@@ -115,7 +127,7 @@ def get_tag():
 @click.command(name='push')
 @click.option('--args', '-a', multiple=True, help='Docker command arguments')
 def push(args):
-  """Used to call docker push"""
+  """Call docker push on saved tag"""
   config = read_config()
   if 'version' not in config or 'format' not in config:
     click.echo('Error: The dove.json configuration is invalid')
@@ -127,17 +139,34 @@ def push(args):
   subprocess.check_call(command, cwd=str(__location__))
 
 @click.command(name='bump')
-@click.option('--bump', '-b', multiple=True, help='Version position(s) to bump')
-def bump(bump):
-  """Used to just bump up the current version"""
+@click.option('--position', '-p', multiple=True, help='Version position(s) to bump')
+def bump(position):
+  """Just bump up the current version"""
   config = read_config()
   if 'version' not in config or 'format' not in config:
     click.echo('Error: The dove.json configuration is invalid')
     return
   old_version = config['version']
   version_parts = old_version.split('.')
-  if bump is not None:
-    version_parts = update_version(old_version, map(int, bump))
+  if position is not None:
+    version_parts = update_version(old_version, map(int, position))
+    config['version'] = to_version_string(version_parts)
+  write_config(config)
+  new_tag = config['format'].format(*version_parts)
+  click.echo(new_tag)
+
+@click.command(name='reset')
+@click.option('--position', '-p', multiple=True, help='Version position(s) to reset')
+def reset(position):
+  """Reset the version at position(s) to 0"""
+  config = read_config()
+  if 'version' not in config or 'format' not in config:
+    click.echo('Error: The dove.json configuration is invalid')
+    return
+  old_version = config['version']
+  version_parts = old_version.split('.')
+  if position is not None:
+    version_parts = reset_version(old_version, map(int, position))
     config['version'] = to_version_string(version_parts)
   write_config(config)
   new_tag = config['format'].format(*version_parts)
@@ -147,7 +176,7 @@ def bump(bump):
 @click.command(name='save')
 @click.option('--filename', '-f', help='The name of the resultant file')
 def save(filename):
-  """Used to call a docker save"""
+  """Call a docker save with saved tag"""
   config = read_config()
   if config is None:
     click.echo("Error: No filename provided")
@@ -167,3 +196,4 @@ cli.add_command(push)
 cli.add_command(get_tag)
 cli.add_command(save)
 cli.add_command(bump)
+cli.add_command(reset)
