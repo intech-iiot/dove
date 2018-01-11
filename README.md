@@ -115,7 +115,7 @@ docker build -t $(dove get) ./
 
 ## Reseting version in tag
 
-You can also reset the verion number at any position by:
+You can also reset the version number at any position by:
 
 ```
 dove reset --position 0
