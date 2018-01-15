@@ -128,17 +128,21 @@ def create_new(template, initial):
 
 
 @click.command(name='get')
-def get_tag():
+@click.option('--version', '-v', help='Just get the version', is_flag=True)
+def get_tag(version):
   """Get the current tag of the image"""
   try:
     config = read_config()
     if 'version' not in config or 'format' not in config:
       click.echo('Error: The dove.json configuration is invalid')
       return
-    version = config['version'].split('.')
-    tag = config['format'].format(*version)
-    click.echo(tag)
-    return tag
+    if version is True:
+      click.echo(config['version'])
+    else:
+      version = config['version'].split('.')
+      tag = config['format'].format(*version)
+      click.echo(tag)
+      return tag
   except BaseException as e:
     print str(e)
 
