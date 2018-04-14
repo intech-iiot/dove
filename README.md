@@ -23,10 +23,10 @@ Like docker, it's a command-line tool. Do a `dove` on the shell to display all t
 Usage: dove [OPTIONS] COMMAND [ARGS]...
 
   A docker versioning extension that manages docker tags through a JSON
-  file, so that the user doesn't have to  get into the hassle of writing and
+  file, so that the user doesn't have to get into the hassle of writing and
   updating image tags.
 
-  Maintained by: Intech Process Automation
+  Maintained by: Intech A&I
 
   For more info, visit:
 
@@ -36,15 +36,14 @@ Options:
   --help  Show this message and exit.
 
 Commands:
-  build  Call docker build with saved tag
+  build  Build the docker image with saved tag
   bump   Just bump up the current version
-  get    Get the current tag of the image
-  new    Initialize a new dove configuration
-  push   Call docker push on saved tag
+  get    Get the current tag from the config
+  new    Initialize a new dove config
+  push   Push the image with tag saved in the config
   reset  Reset the version at position(s) to 0
-  save   Call a docker save with saved tag
-  tag    Call docker tag with saved tag
-
+  save   Save an image with the tag from the config
+  tag    Tag another image with the saved tag
 
 ```
 
