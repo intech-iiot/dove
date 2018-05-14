@@ -164,6 +164,42 @@ dove build -a --pull -a --no-cache -a --label=pickle-rick
 
 Yeah I know, it's pretty repetitive, and you can only use the long version with `=`, but I didn't know any other way of separating the dove and docker command line args. At least it's better than nothing.
 
+## Alternate Tag Formats
+
+From version 0.0.3 onwards commands and parameters for maintaining alternate tag formats was introduced. What this means is that the `dove.json` can contain more than one tag format in which the version is substituted. This is done by keeping a primary tag format and maintaining a name-value pair of alternate tag formats. These tags can be used in the other commands by means of a `-l` or `--alt` flag. This is very useful for multi-stage builds. You can have a different tag with the same version for different builds by using this.
+
+### Adding a new alternate tag format
+
+To add a new alternate tag to the existing `dove.json` configuration, do a:
+
+```
+dove add-alt -l my-alt-tag my-repo/my-image:{0}.{1}.{2}
+```
+
+### Viewing all the alternates
+
+To view the alternates that were added to the configuration file, do a: 
+
+```
+dove alts
+```
+
+### Removing an alternate tag format
+
+An alternate can be removed through it's name by doing a:
+
+```
+dove remove-alt -n my-alt-tag
+```
+
+### Using alternate tags in the other commands
+
+Any command that uses tags from the configuration file has an existing flag `-l` or `--alt` which is used to specify the name of the alternate you itend to use. For example, to build an image with an alternate tag, do a: 
+
+```
+dove build -l my-alt-tag
+```
+
 ## Contributing
 
 I'm strictly not a python programmer and really did it as a side project so I can make some pretty streamlined CD/CI. I'd really appreciate if you want to contribute to this little utility of mine.

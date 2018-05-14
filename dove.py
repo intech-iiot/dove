@@ -337,6 +337,8 @@ def removealt(name, cfgpath):
         click.echo("No alternate found for name " + alt_name)
         exit(1)
       del config[ALTERNATE][alt_name]
+    if len(config[ALTERNATE]) is 0:
+      del config[ALTERNATE]
     write_config(config, cfgpath)
   except BaseException as e:
     click.echo(str(e))
