@@ -75,12 +75,16 @@ def validate_config(config):
 
 
 def extend_command(*args):
-  command = None
-  for arr in args:
-    if command is None:
-      command = arr
+  command = []
+  for arg in args:
+    if type(arg) is list or type(arg) is tuple:
+      command.extend(extend_command(*arg))
+    elif type(arg) is str or type(arg) is unicode:
+      split = arg.split(' ')
+      for part in split:
+        command.append(part)
     else:
-      command.extend(arr)
+      raise ValueError('Unknown type specified in command')
   return command
 
 
