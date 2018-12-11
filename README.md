@@ -11,7 +11,7 @@ You keep a docker tag template and a version in a configuration file and you use
 
 You'd need docker(duh), python3 and pip3 (for python3). Simply clone the repository and do a
 ```
-sudo -H pip install ./
+pip install dove-docker
 ```
 inside the cloned repository.
 
