@@ -8,7 +8,7 @@ with open(path.join(this_directory, 'README.md')) as f:
 
 setup(
     name="dove-docker",
-    version='0.0.5',
+    version='0.0.6',
     description='A tool to extend the docker functionality to include an incremental tag versioning system for docker images',
     license='Apache 2.0',
     long_description=long_description,
@@ -18,7 +18,7 @@ setup(
     url='https://github.com/intech-iiot/dove', 
     py_modules=['dove'],
     install_requires=[
-      'Click==6.7',
+      'click==7.0',
     ],
     entry_points={
       'console_scripts': [
